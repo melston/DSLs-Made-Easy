@@ -37,3 +37,15 @@ span.data-reference {
     color: blue;
     text-decoration: underline;
 }
+
+input {
+    font-size: 12pt;
+    border-radius: 5px;
+    border: 3px solid yellow;
+    background-color: lightyellow;
+    padding-left: 5px;
+}
+
+input:focus {
+    outline: none;
+}

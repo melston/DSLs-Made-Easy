@@ -1,14 +1,17 @@
 import React from "react"
 import { render } from "react-dom"
+import { observable } from "mobx"
+import { observer } from "mobx-react"
 
 require('./styling.css')
 
 import { rental } from "../ch03/listingX.js"
 import { isAstObject } from "./ast"
+import { TextValue } from "./value-components"
 
 const anAsNeeded = (nextword) => "a" + (nextword.match(/^[aeiou]/) ? "n" : "")
 
-const Projection = ({ value, parent }) => {
+const Projection = observer(({ value, parent }) => {
     if (isAstObject(value)) {
         const { settings } = value
         switch (value.concept) {
@@ -18,7 +21,11 @@ const Projection = ({ value, parent }) => {
             </div>
             case "Data Attribute": return <div className="attribute">
                     <span className="keyword">the</span>&nbsp;
-                    <span className="value">{settings["name"]}</span>&nbsp;
+                    <TextValue editState={ 
+                        observable({ value: settings["name"], 
+                                     inEdit: false,
+                                     setValue: (newValue) => settings["name"] = newValue }) 
+                    }/>&nbsp;
                     <span className="keyword">is {anAsNeeded(settings["type"])}</span>&nbsp;
                     <span className="value quoted-type">{settings["type"]}</span>&nbsp;
                     {settings["initial value"] &&
@@ -38,7 +45,11 @@ const Projection = ({ value, parent }) => {
             case "Record Type": return <div>
                     <div>
                         <span className="keyword">Record Type</span>&nbsp;
-                        <span className="value">Rental</span>
+                        <TextValue editState={  
+                            observable({ value: settings["name"], 
+                                         inEdit: false,
+                                         setValue: (newValue) => settings["name"] = newValue }) 
+                        }/>
                     </div>
                     <div className="attributes">
                         <div><span className="keyword">attributes:</span></div>
@@ -53,10 +64,10 @@ const Projection = ({ value, parent }) => {
         }
     }
     return <em>{"No projection defined for value: " + value}</em>
-}
+})
 
 render(
-    <Projection value={rental} />,
+    <Projection value={observable(rental)} />,
     document.getElementById("root")
 )
 
