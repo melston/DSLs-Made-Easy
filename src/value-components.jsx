@@ -1,31 +1,32 @@
 import React from "react"
-import  { observer } from "mobx-react"
+import { observer } from "mobx-react"
 import { action } from "mobx"
 
-const inputValueComponent = ({ inputType, isValid }) => {
+const inputValueComponent = ({ inputType, isValid }) =>
     observer(({ editState }) =>
         editState.inEdit
-            ? <input type={inputType}
+            ? <input 
+                type={inputType}
                 defaultValue={editState.value}
                 autoFocus={true}
                 onBlur={action((event) => {
                     const newValue = event.target.value
-                    if (isValid(newValue)) {
+                    if (!isValid || isValid(newValue)) {
                         editState.setValue(newValue)
                     }
                     editState.inEdit = false
                 })}
                 onKeyUp={action((event) => {
-                if (event.key === "Enter") {
-                    const newValue = event.target.value
-                    if (isValid(newValue)) {
-                        editState.setValue(newValue)
+                    if (event.key === "Enter") {
+                        const newValue = event.target.value
+                        if (!isValid || isValid(newValue)) {
+                            editState.setValue(newValue)
+                        }
                         editState.inEdit = false
                     }
-                }
-                if (event.key === "Escape") {
-                    editState.inEdit = false
-                }
+                    if (event.key === "Escape") {
+                        editState.inEdit = false
+                    }
                 })}
             />
             : <span className="value"
@@ -34,66 +35,39 @@ const inputValueComponent = ({ inputType, isValid }) => {
                 })}
             >{editState.value}</span>
     )
-}
 
-export const TextValue = observer(({ editState }) => 
+
+export const TextValue = inputValueComponent({ inputType: "text" })
+
+const isNumber = (str) => !isNaN(str) && (str.trim().length > 0)
+export const NumberValue = inputValueComponent({ inputType: "number", isValid: isNumber })
+
+export const DropDownValue = observer(({ editState, className, options }) =>
     editState.inEdit
-        ? <input type="text"
-            defaultValue={editState.value}
+        ? <select
             autoFocus={true}
+            value={editState.value}
+            style={{ width: Math.max(...options.map((option) => option.length)) + "ch" }}
             onBlur={action((_) => {
-                const newValue = event.target.value
-                editState.setValue(newValue)
+                editState.inEdit = false
+            })}
+            onChange={action((event) => {
+                editState.setValue(event.target.value)
                 editState.inEdit = false
             })}
             onKeyUp={action((event) => {
-                if (event.key === "Enter") {
-                    const newValue = event.target.value
-                    editState.setValue(newValue)
-                    editState.inEdit = false
-                }
                 if (event.key === "Escape") {
                     editState.inEdit = false
                 }
             })}
-        />
-        : <span className="value"
-            onClick={ action((_) => {
+        >
+            {options.map((option, index) =>
+                <option key={index}>{option}</option>
+            )}
+        </select>
+        : <span className={className}
+            onClick={action((_) => {
                 editState.inEdit = true
             })}
         >{editState.value}</span>
-    )
-
-    const isNumber = (str) => !isNaN(str) && (str.trim().length() > 0)
-
-    export const NumberValue = observer(({ editState }) =>
-        editState.inEdit
-            ? <input type="number"
-                defaultValue={editState.value}
-                autoFocus={true}
-                onBlur={action((event) => {
-                    const newValue = event.target.value
-                    if (isNumber(newValue)) {
-                        editState.setValue(newValue)
-                    }
-                    editState.inEdit = false
-                })}
-                onKeyUp={action((event) => {
-                if (event.key === "Enter") {
-                    const newValue = event.target.value
-                    if (isNumber(newValue)) {
-                        editState.setValue(newValue)
-                        editState.inEdit = false
-                    }
-                }
-                if (event.key === "Escape") {
-                    editState.inEdit = false
-                }
-                })}
-            />
-            : <span className="value"
-                onClick={action((_) => {
-                    editState.inEdit = true
-                })}
-            >{editState.value}</span>
     )

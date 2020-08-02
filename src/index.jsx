@@ -7,13 +7,18 @@ require('./styling.css')
 
 import { rental } from "../ch03/listingX.js"
 import { isAstObject } from "./ast"
-import { TextValue } from "./value-components"
+import { TextValue, NumberValue, DropDownValue } from "./value-components"
 
 const anAsNeeded = (nextword) => "a" + (nextword.match(/^[aeiou]/) ? "n" : "")
 
 const Projection = observer(({ value, parent }) => {
     if (isAstObject(value)) {
         const { settings } = value
+        const editStateFor = (propertyName) =>  observable({
+            value: settings[propertyName],
+            inEdit: false,
+            setValue: (newValue) => { settings[propertyName] = newValue }
+        })
         switch (value.concept) {
             case "Attribute Reference": return <div className="inline">
                 <span className="keyword">the </span>
@@ -21,13 +26,13 @@ const Projection = observer(({ value, parent }) => {
             </div>
             case "Data Attribute": return <div className="attribute">
                     <span className="keyword">the</span>&nbsp;
-                    <TextValue editState={ 
-                        observable({ value: settings["name"], 
-                                     inEdit: false,
-                                     setValue: (newValue) => settings["name"] = newValue }) 
-                    }/>&nbsp;
+                    <TextValue editState={editStateFor("name")} />&nbsp;
                     <span className="keyword">is {anAsNeeded(settings["type"])}</span>&nbsp;
-                    <span className="value quoted-type">{settings["type"]}</span>&nbsp;
+                    <DropDownValue
+                        className="value quoted-type"
+                        editState={editStateFor("type")}
+                        options={[ "amount", "percentage", "period in days" ]}
+                    />
                     {settings["initial value"] &&
                         <div className="inline">
                             <span className="keyword">initially</span>&nbsp;
@@ -39,17 +44,14 @@ const Projection = observer(({ value, parent }) => {
                 const attributeType = parent && parent.concept === "Data Attribute" && parent.settings["type"]
                 return <div className="inline">
                         {attributeType === "amount" && <span className="keyword">$</span>}
-                        <span className="value">{settings["value"]}</span>
+                        <NumberValue editState={editStateFor("value")}/>
                         {attributeType === "percentage" && <span className="keyword">%</span>}
+                        {attributeType === "period in days" && <span className="keyword"> days</span>}
                 </div>
             case "Record Type": return <div>
                     <div>
                         <span className="keyword">Record Type</span>&nbsp;
-                        <TextValue editState={  
-                            observable({ value: settings["name"], 
-                                         inEdit: false,
-                                         setValue: (newValue) => settings["name"] = newValue }) 
-                        }/>
+                        <TextValue editState={editStateFor("name")} />
                     </div>
                     <div className="attributes">
                         <div><span className="keyword">attributes:</span></div>
