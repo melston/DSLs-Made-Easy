@@ -15,6 +15,18 @@ span.value {
     border-radius: 5px;
 }
 
+span.value-missing {
+    padding-left: 0.15em;
+    padding-right: 0.25em;
+    background-color: rgb(209, 108, 108);
+    color: lightgray;
+    width: 10em;
+    border-radius: 5px;
+    text-decoration: underline;
+    text-decoration-style: dashed;
+    text-decoration-color: rgb(228, 30, 23);
+}
+
 div.attributes {
     margin-top: 1em;
     margin-left: 1em;
@@ -53,3 +65,17 @@ input:focus {
 select {
     font-size: 12pt;
 }
+
+select option.action {
+    color: lightgray;
+    font-style: italic;
+}
+
+button.add-new {
+    font-size: 18pt;
+    border-radius: 10px;
+    border: 0px;
+    background-color: rgb(49, 161, 49);
+    cursor: pointer;
+}
+
