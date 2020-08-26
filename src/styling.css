@@ -44,6 +44,12 @@ div.inline {
     display: inline-block;
 }
 
+div.selected {
+    background-color: khaki;
+    width: max-content;
+    outline: none;
+}
+
 span.data-reference {
     font-style: italic;
     color: blue;

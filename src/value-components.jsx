@@ -10,7 +10,8 @@ const isNumber = (str) => !isNaN(str) && (str.trim().length > 0)
 
 const DisplayValue = observer(({ editState, className, placeholderText }) =>
         <span className={isMissing(editState.value) ? "value-missing" : className}
-            onClick={action((_) => {
+            onClick={action((evt) => {
+                evt.stopPropagation()
                 editState.inEdit = true
             })}
         >{isMissing(editState.value) ? placeholderText : editState.value}</span>

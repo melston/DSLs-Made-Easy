@@ -11,6 +11,7 @@ import { TextValue, NumberValue, DropDownValue, AddNewButton } from "./value-com
 
 const anAsNeeded = (nextword) => "a" + (typeof nextword === "string" && (nextword.match(/^[aeiou]/)) ? "n" : "")
 const placeholderAstObject = "<placeholder for an AST object>"
+const selection = observable({ selected: undefined })
 
 rental.settings["attributes"].push({
     concept: "Data Attribute",
@@ -49,7 +50,10 @@ const Projection = observer(({ value, ancestors }) => {
                     />
                 </div>
             case "Data Attribute": 
-                return <div className="attribute">
+                return <div 
+                        className={"attribute" + (selection.selected === value ? " selected" : "")}
+                        onClick={action((_) => {
+                            selection.selected = value})} >
                     <span className="keyword">the</span>&nbsp;
                     <TextValue editState={editStateFor("name")} placeholderText="<name>" />&nbsp;
                     <span className="keyword">is {anAsNeeded(settings["type"])}</span>&nbsp;
