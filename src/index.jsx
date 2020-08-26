@@ -8,15 +8,10 @@ require('./styling.css')
 import { rental } from "../ch03/listingX.js"
 import { isAstObject } from "./ast"
 import { TextValue, NumberValue, DropDownValue, AddNewButton } from "./value-components"
+import { Selectable } from "./selectable"
 
 const anAsNeeded = (nextword) => "a" + (typeof nextword === "string" && (nextword.match(/^[aeiou]/)) ? "n" : "")
 const placeholderAstObject = "<placeholder for an AST object>"
-const selection = observable({ selected: undefined })
-
-rental.settings["attributes"].push({
-    concept: "Data Attribute",
-    settings: {}
-})
 
 const Projection = observer(({ value, ancestors }) => {
     if (isAstObject(value)) {
@@ -31,10 +26,9 @@ const Projection = observer(({ value, ancestors }) => {
             case "Attribute Reference": 
                 const recordType = ancestors.find((anc) => anc.concept === "Record Type")
                 const attributes = recordType.settings["attributes"]
-                return <div className="inline">
+                return <Selectable className="inline" astObject={value} >
                     <span className="keyword">the </span>
                     <DropDownValue
-                        actionText="(choose an attribute to reference)"
                         editState={observable({
                             value: settings["attribute"] && settings["attribute"].ref.settings["name"],
                             inEdit: false,
@@ -44,18 +38,16 @@ const Projection = observer(({ value, ancestors }) => {
                                 }
                             }
                         })}
-                        placeholderText="<attribute>"
                         className="data-reference"
                         options={attributes.map((attr) =>attr.settings["name"]).filter((attr) => attr !== ancestors[0].settings["name"])}
+                        placeholderText="<attribute>"
+                        actionText="(choose an attribute to reference)"
                     />
-                </div>
+                </Selectable>
             case "Data Attribute": 
-                return <div 
-                        className={"attribute" + (selection.selected === value ? " selected" : "")}
-                        onClick={action((_) => {
-                            selection.selected = value})} >
+                return <Selectable className="attribute" astObject={value}>
                     <span className="keyword">the</span>&nbsp;
-                    <TextValue editState={editStateFor("name")} placeholderText="<name>" />&nbsp;
+                    <TextValue editState={editStateFor("name")} />&nbsp;
                     <span className="keyword">is {anAsNeeded(settings["type"])}</span>&nbsp;
                     <DropDownValue
                         className="value quoted-type"
@@ -91,24 +83,27 @@ const Projection = observer(({ value, ancestors }) => {
                         : 
                         <AddNewButton 
                             btnText="+ initial value"
-                            fn={action((_) => 
-                                    settings["initial value"] = placeholderAstObject
-                                )}
+                            fn={() => {
+                                    settings["initial value"] = placeholderAstObject 
+                                }}
                         />
                     }
-                </div>
+                </Selectable>
             case "Number Literal": 
-                const attributeType = ancestors && ancestors.concept === "Data Attribute" && ancestors.settings["type"]
-                return <div className="inline">
+                //const attributeType = ancestors && ancestors.concept === "Data Attribute" && ancestors.settings["type"]
+                const attribute = ancestors.find((ancestor) => ancestor.concept === "Data Attribute")
+                const attributeType = attribute.settings["type"]
+                return <Selectable className="inline" astObject={value} >
                         {attributeType === "amount" && <span className="keyword">$</span>}
-                        <NumberValue editState={editStateFor("value")}/>
+                        <NumberValue editState={editStateFor("value")} placeholderText="<number>" />
                         {attributeType === "percentage" && <span className="keyword">%</span>}
-                        {attributeType === "period in days" && <span className="keyword"> days</span>}
-                </div>
-            case "Record Type": return <div>
+                        {attributeType === "period in days" && <span className="keyword">nbsp;days</span>}
+                </Selectable>
+            case "Record Type": 
+                return <Selectable className="record-type" astObject={value} >
                     <div>
                         <span className="keyword">Record Type</span>&nbsp;
-                        <TextValue editState={editStateFor("name")} />
+                        <TextValue editState={editStateFor("name")} placeholderText="<name>" />
                     </div>
                     <div className="attributes">
                         <div><span className="keyword">attributes:</span></div>
@@ -117,14 +112,15 @@ const Projection = observer(({ value, ancestors }) => {
                         )}
                         <AddNewButton 
                             btnText="+ attribute"
-                            fn={action((_) => 
+                            fn={() => {
                                     settings["attributes"].push({
                                         concept: "Data Attribute",
                                         settings: {}
-                                }))}
+                                    })
+                            }}
                         />
                     </div>
-                </div>
+                </Selectable>
             default: return <div className="inline">
                 <em>{"No projection defined for concept: " + value.concept}</em>
             </div>

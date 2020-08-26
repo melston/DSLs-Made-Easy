@@ -36,8 +36,8 @@ const inputValueComponent = ({ inputType, isValid }) =>
                         const newValue = event.target.value
                         if (!isValid || isValid(newValue)) {
                             editState.setValue(newValue)
+                            editState.inEdit = false
                         }
-                        editState.inEdit = false
                     }
                     if (event.key === "Escape") {
                         editState.inEdit = false
@@ -55,7 +55,10 @@ export const AddNewButton = observer(({btnText, fn}) =>
     <button 
         className="add-new"
         tabIndex={-1}
-        onClick={fn}
+        onClick={action((event) => {
+            event.stopPropagation()
+            actionFunction()
+        })}
     >{btnText}</button>
 )
 
@@ -71,7 +74,8 @@ export const DropDownValue = observer(({ editState, className, options, placehol
             style={{ width: Math.max(
                     ...options.map((option) => option.length),
                     actionText && actionText.length
-                ) + "ch" }}
+                ) + "ch"
+            }}
             onChange={action((event) => {
                 const newValue = event.target.value
                 if (newValue != actionText) {
@@ -88,10 +92,8 @@ export const DropDownValue = observer(({ editState, className, options, placehol
                 }
             })}
         >
-        {actionText && <option key={-1} className="action">{actionText}</option>}
-        {options.map((option, index) =>
-            <option key={index}>{option}</option>
-        )}
+            {actionText && <option key={-1} className="action">{actionText}</option>}
+            {options.map((option, index) => <option key={index}>{option}</option> )}
         </select>
         : <DisplayValue
                 editState={editState}
