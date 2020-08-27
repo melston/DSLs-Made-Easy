@@ -51,7 +51,7 @@ const inputValueComponent = ({ inputType, isValid }) =>
               />
     )
 
-export const AddNewButton = observer(({btnText, fn}) =>
+export const AddNewButton = observer(({btnText, actionFunction}) =>
     <button 
         className="add-new"
         tabIndex={-1}

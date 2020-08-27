@@ -13,7 +13,7 @@ import { Selectable } from "./selectable"
 const anAsNeeded = (nextword) => "a" + (typeof nextword === "string" && (nextword.match(/^[aeiou]/)) ? "n" : "")
 const placeholderAstObject = "<placeholder for an AST object>"
 
-const Projection = observer(({ value, ancestors }) => {
+const Projection = observer(({ value, deleteValue, ancestors }) => {
     if (isAstObject(value)) {
         const { settings } = value
         const editStateFor = (propertyName) =>  observable({
@@ -26,7 +26,10 @@ const Projection = observer(({ value, ancestors }) => {
             case "Attribute Reference": 
                 const recordType = ancestors.find((anc) => anc.concept === "Record Type")
                 const attributes = recordType.settings["attributes"]
-                return <Selectable className="inline" astObject={value} >
+                return <Selectable 
+                            className="inline" 
+                            astObject={value} 
+                            deleteAstObject={deleteValue} >
                     <span className="keyword">the </span>
                     <DropDownValue
                         editState={observable({
@@ -45,7 +48,10 @@ const Projection = observer(({ value, ancestors }) => {
                     />
                 </Selectable>
             case "Data Attribute": 
-                return <Selectable className="attribute" astObject={value}>
+                return <Selectable 
+                            className="attribute" 
+                            astObject={value} 
+                            deleteAstObject={deleteValue} >
                     <span className="keyword">the</span>&nbsp;
                     <TextValue editState={editStateFor("name")} />&nbsp;
                     <span className="keyword">is {anAsNeeded(settings["type"])}</span>&nbsp;
@@ -77,15 +83,21 @@ const Projection = observer(({ value, ancestors }) => {
                                 actionText="{choose concept for initial value}"
                               />
                             :
-                            <Projection value={settings["initial value"]} ancestors={[value, ...ancestors]} />
+                                <Projection 
+                                    value={settings["initial value"]} 
+                                    ancestors={[value, ...ancestors]} 
+                                    deleteValue = {() => {
+                                        delete settings["initial value"]
+                                    }}
+                                />
                             }
                         </div>
                         : 
                         <AddNewButton 
                             btnText="+ initial value"
-                            fn={() => {
-                                    settings["initial value"] = placeholderAstObject 
-                                }}
+                            actionFunction={() => {
+                                                settings["initial value"] = placeholderAstObject 
+                                            }}
                         />
                     }
                 </Selectable>
@@ -93,14 +105,16 @@ const Projection = observer(({ value, ancestors }) => {
                 //const attributeType = ancestors && ancestors.concept === "Data Attribute" && ancestors.settings["type"]
                 const attribute = ancestors.find((ancestor) => ancestor.concept === "Data Attribute")
                 const attributeType = attribute.settings["type"]
-                return <Selectable className="inline" astObject={value} >
+                return <Selectable className="inline" astObject={value} deleteAstObject={deleteValue} >
                         {attributeType === "amount" && <span className="keyword">$</span>}
                         <NumberValue editState={editStateFor("value")} placeholderText="<number>" />
                         {attributeType === "percentage" && <span className="keyword">%</span>}
-                        {attributeType === "period in days" && <span className="keyword">nbsp;days</span>}
+                        {attributeType === "period in days" && <span className="keyword">&nbsp;days</span>}
                 </Selectable>
             case "Record Type": 
-                return <Selectable className="record-type" astObject={value} >
+                return <Selectable 
+                            className="record-type" 
+                            astObject={value} >
                     <div>
                         <span className="keyword">Record Type</span>&nbsp;
                         <TextValue editState={editStateFor("name")} placeholderText="<name>" />
@@ -108,16 +122,22 @@ const Projection = observer(({ value, ancestors }) => {
                     <div className="attributes">
                         <div><span className="keyword">attributes:</span></div>
                         {settings["attributes"].map((attribute, index) => 
-                            <Projection value={attribute} key={index} ancestors={[value, ...ancestors]} />
+                            <Projection 
+                                value = {attribute} key={index} 
+                                ancestors = {[value, ...ancestors]} 
+                                deleteValue = {() =>{
+                                    settings["attributes"].splice(index, 1)
+                                }}
+                            />
                         )}
                         <AddNewButton 
                             btnText="+ attribute"
-                            fn={() => {
-                                    settings["attributes"].push({
-                                        concept: "Data Attribute",
-                                        settings: {}
-                                    })
-                            }}
+                            actionFunction={() => {
+                                                settings["attributes"].push({
+                                                    concept: "Data Attribute",
+                                                    settings: {}
+                                                })
+                                            }}
                         />
                     </div>
                 </Selectable>
