@@ -1,1 +1,1 @@
-.\node_modules\.bin\parcel .\src\index.html
+.\node_modules\.bin\parcel .\src\frontend\index.html
