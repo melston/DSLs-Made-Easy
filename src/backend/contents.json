@@ -1,0 +1,68 @@
+{
+  "concept": "Record Type",
+  "settings": {
+    "name": "Rental",
+    "attributes": [
+      {
+        "concept": "Data Attribute",
+        "settings": {
+          "name": "rental period",
+          "type": "period in days"
+        }
+      },
+      {
+        "concept": "Data Attribute",
+        "settings": {
+          "name": "rental price before discount",
+          "type": "amount",
+          "initial value": {
+            "concept": "Number Literal",
+            "settings": {
+              "value": "0.0"
+            }
+          }
+        }
+      },
+      {
+        "concept": "Data Attribute",
+        "settings": {
+          "name": "discount",
+          "type": "percentage",
+          "initial value": {
+            "concept": "Number Literal",
+            "settings": {
+              "value": "0"
+            }
+          }
+        }
+      },
+      {
+        "concept": "Data Attribute",
+        "settings": {
+          "name": "rental price after discount",
+          "type": "amount",
+          "initial value": {
+            "concept": "Attribute Reference",
+            "settings": {
+              "attribute": {
+                "ref": {
+                  "concept": "Data Attribute",
+                  "settings": {
+                    "name": "rental price before discount",
+                    "type": "amount",
+                    "initial value": {
+                      "concept": "Number Literal",
+                      "settings": {
+                        "value": "0.0"
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    ]
+  }
+}
