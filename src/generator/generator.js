@@ -54,8 +54,8 @@ const App = observer(() => <div>
 render(
     <App />,
     document.getElementById("root")
-)`
-
+)
+`
 }
 
 readFile(astPath, options, (_, data) => {
