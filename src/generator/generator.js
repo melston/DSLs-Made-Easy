@@ -8,6 +8,38 @@ const astPath = join(__dirname, "../backend/contents.json")
 const indexJsxPath = join(__dirname, "../runtime/index.jsx")
 
 const indexJsx = (recordType) => {
+    const { camelCase, withFirstUpper } = require("./template-utils")
+    const name = camelCase(recordType.settings["name"])
+    const Name = withFirstUpper(name)
+
+    const defaultInitExpressionForType = (type) => {
+        switch (type) {
+            case "period in days": return `{ from: Date.now(), to: Date.now() }`
+            default: return `// [GENERATION PROBLEM] type "${type}" isn't handled`
+        }
+    }
+
+    const initAssignment = (attribute) => {
+        const initExpressionForExpression = () => {
+            switch (initialValue.concept) {
+                case "Attribute Reference": {
+                    const targetAttribute = initialValue.settings["attribute"].ref
+                    return `${name}.${camelCase(targetAttribute.settings["name"])}`
+                }
+                case "Number Literal": return `"${initialValue.settings["value"]}"`
+                default: return `// [GENERATION PROBLEM] initial value of concept "${initialValue.concept}" isn't handled`
+            }
+        }
+        const { settings } = attribute
+        const attributeName = camelCase(settings["name"])
+        const initialValue = settings["initial value"]
+        return `${name}.${attributeName} = ${
+            initialValue
+                ? initExpressionForExpression()
+                : defaultInitExpressionForType(settings["type"])
+        }`
+    }
+
     return `import React from "react"
 
 import { render } from "react-dom"
@@ -17,13 +49,10 @@ import { FormField, Input } from "./components"
 
 require("./styling.css")
 
-const newRental = () => {
-    const rental = {}
-    rental.rentalPeriod = { from: Date.now(), to: Date.now() }
-    rental.rentalPriceBeforeDiscount = "0.0"
-    rental.discount = "0"
-    rental.rentalPriceAfterDiscount = rental.rentalPriceBeforeDiscount
-    return rental
+const new${Name} = () => {
+    const ${name} = {}
+${recordType.settings["attributes"].map((attribute) => `    ${initAssignment(attribute)}`).join("\n")}
+    return ${name}
 }
 
 const RentalForm = observer(({ rental }) => <div className="form">
