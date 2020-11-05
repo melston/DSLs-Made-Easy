@@ -1,11 +1,12 @@
 const { writeFileSync } = require("fs")
 const { join } = require("path")
 
-const rental = require("../../ch03/listing3.2")
+const rental = require("../Rental-AST-with-IDs")
+const serialize = require("../ast").serialize
 
 writeFileSync(
     join(__dirname, "contents.json"),
-    JSON.stringify(rental, null, 2),
+    JSON.stringify(serialize(rental), null, 2),
     { encoding: "utf8" }
 )
 

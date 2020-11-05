@@ -1,5 +1,7 @@
+const newId = require("shortid").generate
 
 const rentalPeriodAttribute = {
+	id: newId(),
 	concept: "Data Attribute",
 	settings: {
 		"name": "rental period",
@@ -8,6 +10,7 @@ const rentalPeriodAttribute = {
 }
 
 const rentalPriceBeforeDiscountInitialValue = {
+	id: newId(),
 	concept: "Number Literal",
 	settings: {
 		"value": "0.0"
@@ -15,6 +18,7 @@ const rentalPriceBeforeDiscountInitialValue = {
 }
 
 const rentalPriceBeforeDiscountAttribute = {
+	id: newId(),
 	concept: "Data Attribute",
 	settings: {
 		"name": "rental price before discount",
@@ -24,6 +28,7 @@ const rentalPriceBeforeDiscountAttribute = {
 }
 
 const discountInitialValue = {
+	id: newId(),
 	concept: "Number Literal",
 	settings: {
 		"value": "0"
@@ -31,6 +36,7 @@ const discountInitialValue = {
 }
 
 const discountAttribute = {
+	id: newId(),
 	concept: "Data Attribute",
 	settings: {
 		"name": "discount",
@@ -40,6 +46,7 @@ const discountAttribute = {
 }
 
 const rentalPriceAfterDiscountInitialValue = {
+	id: newId(),
 	concept: "Attribute Reference",
 	settings: {
 		"attribute": {
@@ -49,6 +56,7 @@ const rentalPriceAfterDiscountInitialValue = {
 }
 
 const rentalPriceAfterDiscountAttribute = {
+	id: newId(),
 	concept: "Data Attribute",
 	settings: {
 		"name": "rental price after discount",
@@ -59,6 +67,7 @@ const rentalPriceAfterDiscountAttribute = {
 
 
 const rental = {
+	id: newId(),
 	concept: "Record Type",
 	settings: {
 		"name": "Rental",

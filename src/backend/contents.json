@@ -1,9 +1,11 @@
 {
+  "id": "rSfDCRGUHZ",
   "concept": "Record Type",
   "settings": {
     "name": "Rental",
     "attributes": [
       {
+        "id": "dE52-ai4H",
         "concept": "Data Attribute",
         "settings": {
           "name": "rental period",
@@ -11,11 +13,13 @@
         }
       },
       {
+        "id": "P4dFPctcJb",
         "concept": "Data Attribute",
         "settings": {
           "name": "rental price before discount",
           "type": "amount",
           "initial value": {
+            "id": "fkTfgMFJ4q",
             "concept": "Number Literal",
             "settings": {
               "value": "0.0"
@@ -24,11 +28,13 @@
         }
       },
       {
+        "id": "WmMg8JThPu",
         "concept": "Data Attribute",
         "settings": {
           "name": "discount",
           "type": "percentage",
           "initial value": {
+            "id": "-CcYkm_muo",
             "concept": "Number Literal",
             "settings": {
               "value": "0"
@@ -37,27 +43,17 @@
         }
       },
       {
+        "id": "wRYak5TIXh",
         "concept": "Data Attribute",
         "settings": {
           "name": "rental price after discount",
           "type": "amount",
           "initial value": {
+            "id": "Ep08WGL4eL",
             "concept": "Attribute Reference",
             "settings": {
               "attribute": {
-                "ref": {
-                  "concept": "Data Attribute",
-                  "settings": {
-                    "name": "rental price before discount",
-                    "type": "amount",
-                    "initial value": {
-                      "concept": "Number Literal",
-                      "settings": {
-                        "value": "0.0"
-                      }
-                    }
-                  }
-                }
+                "refID": "P4dFPctcJb"
               }
             }
           }

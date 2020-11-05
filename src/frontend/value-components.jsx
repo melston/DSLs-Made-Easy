@@ -1,26 +1,30 @@
 import React from "react"
-import { observer } from "mobx-react"
 import { action } from "mobx"
+import { observer } from "mobx-react"
 
-const isMissing = (value) => value === null || value === undefined || (
-    typeof value === "string" && value === ""
-)
 
-const isNumber = (str) => !isNaN(str) && (str.trim().length > 0)
+const isMissing = (value) => value === null || value === undefined
 
-const DisplayValue = observer(({ editState, className, placeholderText }) =>
-        <span className={isMissing(editState.value) ? "value-missing" : className}
-            onClick={action((evt) => {
-                evt.stopPropagation()
-                editState.inEdit = true
-            })}
-        >{isMissing(editState.value) ? placeholderText : editState.value}</span>
-    )
+const DisplayValue = ({ editState, className, placeholderText }) =>
+    <span
+        className={isMissing(editState.value) ? "value-missing" : className}
+        onClick={action((event) => {
+            event.stopPropagation()
+            editState.inEdit = true
+        })}
+    >{isMissing(editState.value) ? placeholderText : editState.value}</span>
 
+
+/*
+ * A "higher-order component" (HOC) which is function that returns a React component function
+ * that's parametrized by the properties passed to the HOC:
+ *  - 'inputType' is the type of <input> element, and can be "text", "number", etc.
+ *  - 'isValid' is an optional function for validating the new value
+ */
 const inputValueComponent = ({ inputType, isValid }) =>
     observer(({ editState, placeholderText }) =>
         editState.inEdit
-            ? <input 
+            ? <input
                 type={inputType}
                 defaultValue={editState.value}
                 autoFocus={true}
@@ -44,27 +48,15 @@ const inputValueComponent = ({ inputType, isValid }) =>
                     }
                 })}
             />
-            : <DisplayValue
-                editState={editState}
-                className="value"
-                placeholderText={placeholderText}
-              />
+            : <DisplayValue editState={editState} className="value" placeholderText={placeholderText} />
     )
 
-export const AddNewButton = observer(({btnText, actionFunction}) =>
-    <button 
-        className="add-new"
-        tabIndex={-1}
-        onClick={action((event) => {
-            event.stopPropagation()
-            actionFunction()
-        })}
-    >{btnText}</button>
-)
 
 export const TextValue = inputValueComponent({ inputType: "text" })
 
+const isNumber = (str) => !isNaN(str) && (str.trim().length > 0)
 export const NumberValue = inputValueComponent({ inputType: "number", isValid: isNumber })
+
 
 export const DropDownValue = observer(({ editState, className, options, placeholderText, actionText }) =>
     editState.inEdit
@@ -78,7 +70,7 @@ export const DropDownValue = observer(({ editState, className, options, placehol
             }}
             onChange={action((event) => {
                 const newValue = event.target.value
-                if (newValue != actionText) {
+                if (newValue !== actionText) {
                     editState.setValue(newValue)
                     editState.inEdit = false
                 }
@@ -93,11 +85,8 @@ export const DropDownValue = observer(({ editState, className, options, placehol
             })}
         >
             {actionText && <option key={-1} className="action">{actionText}</option>}
-            {options.map((option, index) => <option key={index}>{option}</option> )}
+            {options.map((option, index) => <option key={index}>{option}</option>)}
         </select>
-        : <DisplayValue
-                editState={editState}
-                className={className}
-                placeholderText={placeholderText}
-          />
-    )
+        : <DisplayValue editState={editState} className={className} placeholderText={placeholderText} />
+)
+

@@ -15,18 +15,6 @@ span.value {
     border-radius: 5px;
 }
 
-span.value-missing {
-    padding-left: 0.15em;
-    padding-right: 0.25em;
-    background-color: rgb(209, 108, 108);
-    color: lightgray;
-    width: 10em;
-    border-radius: 5px;
-    text-decoration: underline;
-    text-decoration-style: dashed;
-    text-decoration-color: rgb(228, 30, 23);
-}
-
 div.attributes {
     margin-top: 1em;
     margin-left: 1em;
@@ -42,31 +30,6 @@ span.quoted-type {
 
 div.inline {
     display: inline-block;
-}
-
-div.selected {
-    background-color: khaki;
-    width: max-content;
-    outline: none;
-}
-
-div.spinner { 
-    width: 40px; 
-    height: 40px; 
-    margin: 100px auto; 
-    background-color: #333;
-    border-radius: 100%; 
-    animation: sk-scaleout 1.0s infinite ease-in-out;
- }
- 
- @keyframes sk-scaleout { 
-    0% { 
-         transform: scale(0); 
-    } 
-    100% { 
-        transform: scale(1.0);
-        opacity: 0;
-    }
 }
 
 span.data-reference {
@@ -91,16 +54,65 @@ select {
     font-size: 12pt;
 }
 
-select option.action {
-    color: lightgray;
-    font-style: italic;
-}
-
 button.add-new {
     font-size: 18pt;
     border-radius: 10px;
     border: 0px;
     background-color: rgb(49, 161, 49);
+    cursor: pointer;
+}
+
+span.value-missing {
+    padding-left: 0.15em;
+    padding-right: 0.25em;
+    background-color: rgb(209, 108, 108);
+    color: lightgray;
+    width: 10em;
+    border-radius: 5px;
+    text-decoration: underline;
+    text-decoration-style: dashed;
+    text-decoration-color: rgb(228, 30, 23);
+}
+
+select option.action {
+    color: lightgray;
+    font-style: italic;
+}
+
+div.selected {
+    background-color: khaki;
+    width: max-content;
+    outline: none;
+}
+
+
+/* grabbed and adapted from: https://tobiasahlin.com/spinkit/ */
+
+div.spinner {
+    width: 40px;
+    height: 40px;
+    margin: 100px auto;
+    background-color: #333;
+    border-radius: 100%;
+    animation: sk-scaleout 1.0s infinite ease-in-out;
+}
+
+@keyframes sk-scaleout {
+    0% {
+        transform: scale(0);
+    }
+    100% {
+        transform: scale(1.0);
+        opacity: 0;
+    }
+}
+
+
+button.save {
+    font-size: 18pt;
+    border-radius: 10px;
+    border: 0px;
+    background-color: rgb(236, 52, 52);
     cursor: pointer;
 }
 
